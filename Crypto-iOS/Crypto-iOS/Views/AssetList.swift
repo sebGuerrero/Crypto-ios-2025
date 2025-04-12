@@ -7,17 +7,27 @@ struct AssetList: View {
 //    @State var task: Task<Void, Never>?
     
     var body: some View {
-        Text(viewModel.errorMessage ?? "")
+        NavigationStack {
             
-        List {
-            ForEach(viewModel.assets) { asset in
-                AssetView(assetViewState: .init(asset))
+            Text(viewModel.errorMessage ?? "")
+                
+            List {
+                ForEach(viewModel.assets) { asset in
+                    NavigationLink {
+                        AssetDetailView(asset: asset)
+                    } label: {
+                        AssetView(assetViewState: .init(asset))
+                    }
+                }
             }
+            .listStyle(.plain)
+            .task {
+               await viewModel.fetchAssets()
+            }
+            .navigationTitle("Home")
+            
         }
-        .listStyle(.plain)
-        .task {
-           await viewModel.fetchAssets()
-        }
+       
 //        .onAppear {
 //            task = Task {
 //                await viewModel.fetchAssets()
