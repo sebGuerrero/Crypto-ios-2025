@@ -11,7 +11,7 @@ struct AssetList: View {
             
         List {
             ForEach(viewModel.assets) { asset in
-                AssetView(asset: asset)
+                AssetView(assetViewState: .init(asset))
             }
         }
         .listStyle(.plain)

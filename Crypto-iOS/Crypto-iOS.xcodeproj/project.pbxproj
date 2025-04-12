@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9EE953F12DA9F4DA00566F89 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = 9EE953F02DA9F4DA00566F89 /* Dependencies */; };
 		9EE953F32DA9F4DA00566F89 /* DependenciesMacros in Frameworks */ = {isa = PBXBuildFile; productRef = 9EE953F22DA9F4DA00566F89 /* DependenciesMacros */; };
+		9EF136882DAAD08C00C0C2AE /* DependenciesTestSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 9EF136872DAAD08C00C0C2AE /* DependenciesTestSupport */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9EF136882DAAD08C00C0C2AE /* DependenciesTestSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +87,7 @@
 				9E75DD942DA9E36000BDAB9E /* Crypto-iOS */,
 				9E75DDA22DA9E36200BDAB9E /* Crypto-iOSTests */,
 				9E75DDAC2DA9E36200BDAB9E /* Crypto-iOSUITests */,
+				9EF136862DAAD08C00C0C2AE /* Frameworks */,
 				9E75DD932DA9E36000BDAB9E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +100,13 @@
 				9E75DDA92DA9E36200BDAB9E /* Crypto-iOSUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9EF136862DAAD08C00C0C2AE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -167,6 +177,7 @@
 			);
 			name = "Crypto-iOSUITests";
 			packageProductDependencies = (
+				9EF136872DAAD08C00C0C2AE /* DependenciesTestSupport */,
 			);
 			productName = "Crypto-iOSUITests";
 			productReference = 9E75DDA92DA9E36200BDAB9E /* Crypto-iOSUITests.xctest */;
@@ -592,6 +603,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9EE953EF2DA9F4DA00566F89 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
 			productName = DependenciesMacros;
+		};
+		9EF136872DAAD08C00C0C2AE /* DependenciesTestSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9EE953EF2DA9F4DA00566F89 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = DependenciesTestSupport;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

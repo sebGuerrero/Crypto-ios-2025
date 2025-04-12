@@ -1,5 +1,6 @@
 import Dependencies
 import Foundation
+import XCTestDynamicOverlay
 
 struct AssetsApiClient {
     var fetchAllAssets: () async throws -> [Asset]
@@ -7,6 +8,13 @@ struct AssetsApiClient {
 
 enum NetworkingError: Error {
     case invalidURL
+    
+    var localizedDescription: String {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        }
+    }
 }
 
 extension AssetsApiClient: DependencyKey {
@@ -57,7 +65,8 @@ extension AssetsApiClient: DependencyKey {
     
     static var testValue: AssetsApiClient {
         .init(fetchAllAssets: {
-            reportIssue("AssetsApiClient.fetchAllAssets is unimplemented")
+            XCTFail("AssetsApiClient.fetchAllAssets is unimplemented")
+//            reportIssue("AssetsApiClient.fetchAllAssets is unimplemented")
             return []
         })
     }

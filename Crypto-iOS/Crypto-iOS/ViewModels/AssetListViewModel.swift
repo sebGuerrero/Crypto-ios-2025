@@ -10,6 +10,12 @@ final class AssetListViewModel {
     @ObservationIgnored
     @Dependency(\.assetsApiClient) var apiClient
     
+    var clientConfigured = false
+    
+    func configClient() {
+        clientConfigured = true
+    }
+    
     func fetchAssets() async {
         do {
             assets = try await apiClient.fetchAllAssets()
