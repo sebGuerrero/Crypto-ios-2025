@@ -62,3 +62,4 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 Crypto-iOS/Crypto-iOS/GoogleService-Info.plist
+Crypto-iOS/GoogleService-Info.plist
