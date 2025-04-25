@@ -19,8 +19,6 @@ final class AssetListViewModel {
     func fetchAssets() async {
         do {
             assets = try await apiClient.fetchAllAssets()
-        } catch let error as NetworkingError {
-            errorMessage = error.localizedDescription
         } catch {
             errorMessage = error.localizedDescription
         }

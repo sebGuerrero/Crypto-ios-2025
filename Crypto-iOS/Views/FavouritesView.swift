@@ -13,6 +13,7 @@ struct FavouritesView: View {
             }
         }
         .listStyle(.plain)
+        .animation(.linear, value: viewModel.assets)
         .task {
             await viewModel.getFavourites()
         }

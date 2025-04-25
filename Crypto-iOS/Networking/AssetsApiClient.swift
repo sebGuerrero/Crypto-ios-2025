@@ -6,36 +6,23 @@ import FirebaseFirestore
 struct AssetsApiClient {
     var fetchAllAssets: () async throws -> [Asset]
     var saveFavourite: (User, Asset) async throws -> Void
-    var fetchFavourites: (User) async throws -> [String]
+    var fetchFavourites: @Sendable (User)  async -> AsyncStream<[String]>
     var fetchAsset: (String) async throws -> Asset
 }
 
-enum NetworkingError: Error {
-    case invalidURL
-    
-    var localizedDescription: String {
-        switch self {
-        case .invalidURL:
-            return "Invalid URL"
-        }
-    }
+enum AssetsApiClientError: Error {
 }
 
 extension AssetsApiClient: DependencyKey {
     static var liveValue: AssetsApiClient {
         let db = Firestore.firestore().collection("favourites")
-        let urlSession = URLSession.shared
-        let apikey = ""
-        let baseUrl = "https://rest.coincap.io/v3"
         
         return .init(
             fetchAllAssets: {
-                guard let url = URL(string: "\(baseUrl)/assets?apiKey=\(apikey)") else {
-                    throw NetworkingError.invalidURL
-                }
-                let (data, _) = try await urlSession.data(for: URLRequest(url: url))
-                let assetsResponse = try JSONDecoder().decode(AssetsResponse.self, from: data)
-                
+                let assetsResponse = try await HTTPClient.sendRequest(
+                    endpoint: AssetsEndpoints.fetchAll,
+                    responseModel: AssetsResponse.self
+                )
                 return assetsResponse.data
             },
             saveFavourite: { user, asset in
@@ -45,20 +32,19 @@ extension AssetsApiClient: DependencyKey {
                 )
             },
             fetchFavourites: { user in
-                // snapshot, snapshotListener
-                let doc = try await db.document(user.id).getDocument()
-                let favourites = doc.get("favourites") as? [String]
-                return favourites ?? []
+                return AsyncStream { continuation in
+                    db.document(user.id).addSnapshotListener { documentSnapshot, error in
+                        let favourites = documentSnapshot?.get("favourites") as? [String] ?? []
+                        continuation.yield(favourites)
+                    }
+                }
             },
             fetchAsset: { assetId in
-                guard let url = URL(string: "\(baseUrl)/assets/\(assetId)?apiKey=\(apikey)") else {
-                    throw NetworkingError.invalidURL
-                }
-                
-                let (data, _) = try await urlSession.data(for: URLRequest(url: url))
-                let asset = try JSONDecoder().decode(AssetResponse.self, from: data)
-                
-                return asset.data
+                let assetsResponse = try await HTTPClient.sendRequest(
+                    endpoint: AssetsEndpoints.fetch(assetId),
+                    responseModel: AssetResponse.self
+                )
+                return assetsResponse.data
             }
         )
     }
@@ -89,7 +75,7 @@ extension AssetsApiClient: DependencyKey {
                 )
             ]},
             saveFavourite: { _, _ in },
-            fetchFavourites: { _ in []},
+            fetchFavourites: { _ in .finished },
             fetchAsset: { _ in .init(
                 id: "solana",
                 name: "Solana",
@@ -112,7 +98,7 @@ extension AssetsApiClient: DependencyKey {
             },
             fetchFavourites: { _ in
                 XCTFail("AssetsApiClietnt.fetchAsset is unimplemented")
-                return []
+                return .finished
             },
             fetchAsset: { _ in
                 XCTFail("AssetsApiClient.fetchAsset is unimplemented")

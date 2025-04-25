@@ -11,20 +11,6 @@ var assetStub: Asset = .init(
     changePercent24Hr: "20.121212"
 )
 
-extension AssetsApiClient {
-    static var mockWithFailure: AssetsApiClient {
-        .init(fetchAllAssets: {
-            throw NetworkingError.invalidURL
-        })
-    }
-    
-    static var mockWithSuccess: AssetsApiClient {
-        .init(fetchAllAssets: {
-            [ assetStub ]
-        })
-    }
-}
-
 
 struct AssetListViewModelTests {
     
@@ -38,7 +24,7 @@ struct AssetListViewModelTests {
     
     @Test func fetchAssetsFailure() async throws {
         let viewModel = withDependencies {
-            $0.assetsApiClient = .mockWithFailure
+            $0.assetsApiClient.fetchAllAssets = { throw RequestError.invalidURL }
         } operation: {
             AssetListViewModel()
         }
@@ -50,7 +36,7 @@ struct AssetListViewModelTests {
     
     @Test func fetchAssetsSuccess() async throws {
         let viewModel = withDependencies {
-            $0.assetsApiClient = .mockWithSuccess
+            $0.assetsApiClient.fetchAllAssets = { [ assetStub ] }
         } operation: {
             AssetListViewModel()
         }
