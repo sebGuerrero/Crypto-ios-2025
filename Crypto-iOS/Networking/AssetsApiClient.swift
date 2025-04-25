@@ -6,6 +6,8 @@ import FirebaseFirestore
 struct AssetsApiClient {
     var fetchAllAssets: () async throws -> [Asset]
     var saveFavourite: (User, Asset) async throws -> Void
+    var fetchFavourites: (User) async throws -> [String]
+    var fetchAsset: (String) async throws -> Asset
 }
 
 enum NetworkingError: Error {
@@ -22,15 +24,15 @@ enum NetworkingError: Error {
 extension AssetsApiClient: DependencyKey {
     static var liveValue: AssetsApiClient {
         let db = Firestore.firestore().collection("favourites")
+        let urlSession = URLSession.shared
+        let apikey = ""
+        let baseUrl = "https://rest.coincap.io/v3"
         
         return .init(
             fetchAllAssets: {
-                let urlSession = URLSession.shared
-                
-                guard let url = URL(string: "https://4ff399d1-53e9-4a28-bc99-b7735bad26bd.mock.pstmn.io/v3/assets") else {
+                guard let url = URL(string: "\(baseUrl)/assets?apiKey=\(apikey)") else {
                     throw NetworkingError.invalidURL
                 }
-                
                 let (data, _) = try await urlSession.data(for: URLRequest(url: url))
                 let assetsResponse = try JSONDecoder().decode(AssetsResponse.self, from: data)
                 
@@ -41,6 +43,22 @@ extension AssetsApiClient: DependencyKey {
                     ["favourites": FieldValue.arrayUnion([asset.id])],
                     merge: true
                 )
+            },
+            fetchFavourites: { user in
+                // snapshot, snapshotListener
+                let doc = try await db.document(user.id).getDocument()
+                let favourites = doc.get("favourites") as? [String]
+                return favourites ?? []
+            },
+            fetchAsset: { assetId in
+                guard let url = URL(string: "\(baseUrl)/assets/\(assetId)?apiKey=\(apikey)") else {
+                    throw NetworkingError.invalidURL
+                }
+                
+                let (data, _) = try await urlSession.data(for: URLRequest(url: url))
+                let asset = try JSONDecoder().decode(AssetResponse.self, from: data)
+                
+                return asset.data
             }
         )
     }
@@ -70,7 +88,15 @@ extension AssetsApiClient: DependencyKey {
                     changePercent24Hr: "9.2828282"
                 )
             ]},
-            saveFavourite: { _, _ in }
+            saveFavourite: { _, _ in },
+            fetchFavourites: { _ in []},
+            fetchAsset: { _ in .init(
+                id: "solana",
+                name: "Solana",
+                symbol: "SOL",
+                priceUsd: "500.29292929",
+                changePercent24Hr: "9.2828282"
+            )}
         )
     }
     
@@ -83,6 +109,20 @@ extension AssetsApiClient: DependencyKey {
             },
             saveFavourite: { _, _ in
                 XCTFail("AssetsApiClient.saveFavourite is unimplemented")
+            },
+            fetchFavourites: { _ in
+                XCTFail("AssetsApiClietnt.fetchAsset is unimplemented")
+                return []
+            },
+            fetchAsset: { _ in
+                XCTFail("AssetsApiClient.fetchAsset is unimplemented")
+                return .init(
+                    id: "solana",
+                    name: "Solana",
+                    symbol: "SOL",
+                    priceUsd: "500.29292929",
+                    changePercent24Hr: "9.2828282"
+                )
             }
         )
     }
