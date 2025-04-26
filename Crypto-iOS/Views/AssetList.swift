@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AssetList: View {
     
-    var viewModel: AssetListViewModel = .init()
+    @State var viewModel: AssetListViewModel = .init()
 
 //    @State var task: Task<Void, Never>?
     

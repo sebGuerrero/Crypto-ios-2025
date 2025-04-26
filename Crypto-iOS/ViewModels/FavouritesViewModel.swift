@@ -12,6 +12,8 @@ final class FavouritesViewModel {
     
     var assets: [Asset] = []
     
+    var tasks: [Task<Void, Never>] = []
+    
     func getFavourites() async {
         do {
             let user = try authClient.getCurrentUser()
@@ -30,7 +32,7 @@ final class FavouritesViewModel {
                             continue
                         }
                         
-                        group.addTask {
+                        let task = Task {
                             do {
                                 print("Start fetching \(favouriteId)")
                                 let asset = try await self.apiClient.fetchAsset(favouriteId)
@@ -40,14 +42,25 @@ final class FavouritesViewModel {
                                 // TODO: Handle error
                             }
                         }
+                        
+                        group.addTask {
+                            task
+                        }
+                        
+                        tasks.append(task)
                     }
                 }
-               
             }
 
         } catch {
             print(error.localizedDescription)
             // Handle errors
+        }
+    }
+    
+    deinit {
+        for task in tasks {
+            task.cancel()
         }
     }
 }

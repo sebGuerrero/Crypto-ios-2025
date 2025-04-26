@@ -1,0 +1,103 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Add to favourites" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar a Favoritos"
+          }
+        }
+      }
+    },
+    "Asset" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "moneda"
+          }
+        }
+      }
+    },
+    "Baseline" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "linea base"
+          }
+        }
+      }
+    },
+    "Date" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fecha"
+          }
+        }
+      }
+    },
+    "email" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mail"
+          }
+        }
+      }
+    },
+    "Favourites" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoritos"
+          }
+        }
+      }
+    },
+    "Hello, world!" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hola Mundo"
+          }
+        }
+      }
+    },
+    "Home" : {
+
+    },
+    "Login" : {
+
+    },
+    "Logout" : {
+
+    },
+    "Modal View" : {
+
+    },
+    "OK" : {
+
+    },
+    "password" : {
+
+    },
+    "Price" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Show Modal" : {
+
+    }
+  },
+  "version" : "1.0"
+}
