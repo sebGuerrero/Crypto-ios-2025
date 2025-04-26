@@ -5,15 +5,22 @@ struct FavouritesView: View {
     @State var viewModel: FavouritesViewModel = .init()
     
     var body: some View {
-        List {
-            ForEach(viewModel.assets) { asset in
-                AssetView(
-                    assetViewState: .init(asset)
-                )
+        NavigationStack{
+            List {
+                ForEach(viewModel.assets) { asset in
+                    NavigationLink {
+                        AssetHistoryView(viewModel: .init(asset))
+                    } label: {
+                        AssetView(
+                            assetViewState: .init(asset)
+                        )
+                    }
+                }
             }
+            .listStyle(.plain)
+            .animation(.linear, value: viewModel.assets)
+            .navigationTitle("Favourites")
         }
-        .listStyle(.plain)
-        .animation(.linear, value: viewModel.assets)
         .task {
             await viewModel.getFavourites()
         }

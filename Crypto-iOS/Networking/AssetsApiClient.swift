@@ -8,6 +8,7 @@ struct AssetsApiClient {
     var saveFavourite: (User, Asset) async throws -> Void
     var fetchFavourites: @Sendable (User)  async -> AsyncStream<[String]>
     var fetchAsset: (String) async throws -> Asset
+    var fetchAssetHistory: (String) async throws -> [AssetHistory]
 }
 
 enum AssetsApiClientError: Error {
@@ -45,6 +46,13 @@ extension AssetsApiClient: DependencyKey {
                     responseModel: AssetResponse.self
                 )
                 return assetsResponse.data
+            },
+            fetchAssetHistory: { assetId in
+                let response = try await HTTPClient.sendRequest(
+                    endpoint: AssetsEndpoints.history(assetId),
+                    responseModel: AssetHistoryResponse.self
+                )
+                return response.data
             }
         )
     }
@@ -82,7 +90,8 @@ extension AssetsApiClient: DependencyKey {
                 symbol: "SOL",
                 priceUsd: "500.29292929",
                 changePercent24Hr: "9.2828282"
-            )}
+            )},
+            fetchAssetHistory: { _ in []}
         )
     }
     
@@ -109,6 +118,10 @@ extension AssetsApiClient: DependencyKey {
                     priceUsd: "500.29292929",
                     changePercent24Hr: "9.2828282"
                 )
+            },
+            fetchAssetHistory: { _ in
+                XCTFail("AssetsApiClient.fetchAssetHistory is unimplemented")
+                return []
             }
         )
     }

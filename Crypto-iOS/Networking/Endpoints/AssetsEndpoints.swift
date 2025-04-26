@@ -3,6 +3,7 @@ import Foundation
 enum AssetsEndpoints {
     case fetchAll
     case fetch(String)
+    case history(String)
 }
 
 extension AssetsEndpoints: Endpoint {
@@ -15,12 +16,14 @@ extension AssetsEndpoints: Endpoint {
             return "assets?apiKey=\(apiKey)"
         case .fetch(let id):
             return "assets/\(id)?apiKey=\(apiKey)"
+        case .history(let id):
+            return "assets/\(id)/history?apiKey=\(apiKey)&interval=h1"
         }
     }
     
     var method: RequestMethod {
         switch self {
-        case .fetchAll, .fetch:
+        case .fetchAll, .fetch, .history:
             return .get
         }
     }
